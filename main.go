@@ -36,10 +36,10 @@ func login(w http.ResponseWriter, req *http.Request) {
 		//Database query
 		err:= db.QueryRow("SELECT email FROM users WHERE email=? AND password=?",email,hex.EncodeToString(pwd[:])).Scan(&dbemail)
 		if err == nil {
-			w.Write([]byte("hello user"))
+			w.Write([]byte("hello"))
 			w.Write([]byte(dbemail))
 		}else {
-			http.Redirect(w, req,"/app3/login",301)
+			http.Redirect(w, req,"/login",301)
 			return
 		}
 	}
@@ -73,10 +73,10 @@ func register(w http.ResponseWriter, req *http.Request) {
 		_,err = db.Exec("INSERT INTO users(email,password) VALUES(?,?)",email,hex.EncodeToString(pwd[:]))
 
 		if err == nil {
-			http.Redirect(w,req,"/app3/profile",301)
+			http.Redirect(w,req,"/profile",301)
 		}else {
 			//http.Error(w,"Cant create",500)
-			http.Redirect(w,req,"/app3/",301)
+			http.Redirect(w,req,"/",301)
 
 		}
 		w.Write([]byte("User created"))
@@ -141,9 +141,9 @@ func main()  {
 		panic(err.Error())
 	}
 
-	http.HandleFunc("/app3/register",register)
-	http.HandleFunc("/app3/",login)
-	http.HandleFunc("/app3/profile",createProfile)
+	http.HandleFunc("/register",register)
+	http.HandleFunc("/",login)
+	http.HandleFunc("/profile",createProfile)
 	http.ListenAndServe(":8011",nil)
 }
 
