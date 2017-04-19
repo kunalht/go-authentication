@@ -5,29 +5,29 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
           crossorigin="anonymous">
-    <title>Title</title>
+    <title>Reset Password</title>
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <h1 style="text-align: center">Login Here:</h1>
+        <h1 style="text-align: center">Enter your new password:</h1>
         <div style="width: 30%; margin: 30px auto">
+            <h3> Please check your mail. Enter key from that</h3>
             <form action="" method="POST">
                 <div class="form-group">
                     <input class="form-control" type="email" name="email" placeholder="Email">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="password" name="password" placeholder="Password">
+                    <input class="form-control" type="text" name="key" placeholder="Key">
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-primary btn-lg btn-block"> Submit! </a></button>
+                    <input class="form-control" type="password" name="password" placeholder="new password">
                 </div>
+
+                <button class="btn btn-primary btn-lg btn-block"> Submit! </a></button>
             </form>
-            <form method="get" action="/login/google">
-            <button  class="btn btn-danger btn-lg" type="submit">Login with google</button>
-            </form>
-            <H4> Forgot password? <br><a href="/reset">Click here to reset it</a> </H4>
-            <h2>Dont have an account? <br><a href="/register">Register here</a> </h2>
+
+            <h2<br><a href="/login">>Go back </a> </h2>
 
         </div>
     </div>

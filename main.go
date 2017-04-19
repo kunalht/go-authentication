@@ -18,6 +18,8 @@ import (
 	"net/url"
 	"strings"
 	"encoding/json"
+	"time"
+	"net/smtp"
 )
 var store = sessions.NewCookieStore([]byte("Secret text"))
 var cookieHandler = securecookie.New(
@@ -165,6 +167,7 @@ func getDBConnection() (*sql.DB, error) {
 	db, err := sql.Open("mysql", "root:kunal@/authDB")
 	return db, err
 }
+
 
 //Clear session
 func clearSession(w http.ResponseWriter)  {
@@ -323,9 +326,65 @@ func createProfile(w http.ResponseWriter,req *http.Request) {
 
 }
 
+func passReset(w http.ResponseWriter,req *http.Request) {
+	if req.Method != "POST" {
+		http.ServeFile(w, req, "passReset.html")
+		return
+	}
+	auth := smtp.PlainAuth("Kunal Trivedi", "kunalht", "optimusprime@28", "smtp.live.com")
+	email:= req.FormValue("email")
+	key := sha256.Sum256([]byte(email+time.Now().Format("12:00:00")))
+
+	to := []string{email}
+	msg := []byte("To:" +email + "\r\n"+
+		"Subject: Password reset !\r\n" +
+		"\r\n" +
+		"Here is your key to reset password \n" + hex.EncodeToString(key[:]) +
+		"\r\n Please enter it on our website")
+	err := smtp.SendMail("smtp.live.com:587", auth, "kunalht@hotmail.com", to, msg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+
+	db, err := getDBConnection()
+	if err == nil {
+		db.Exec("INSERT into passkey (email,resetkey) values (?,?)",email,hex.EncodeToString(key[:]))
+		http.Redirect(w, req, "/resetResp", 301)
+	}
+
+}
+
+func checkLink(w http.ResponseWriter,req *http.Request)  {
+	if req.Method != "POST" {
+		http.ServeFile(w, req, "resetResponse.html")
+		return
+	}
+
+	email:= req.FormValue("email")
+	key := req.FormValue("key")
+	password:= req.FormValue("password")
+	pwd := sha256.Sum256([]byte(password))
+	var dbkey string
+
+	db, err := getDBConnection()
+	if err == nil {
+		db.QueryRow("SELECT resetkey from passkey where email=?",email).Scan(&dbkey)
+	}
+	if key == dbkey{
+		_,err := db.Exec("UPDATE users set password=? where email=?",hex.EncodeToString(pwd[:]),email)
+		if err == nil{
+			http.Redirect(w, req, "/login", 301)
+		}else {
+			w.Write([]byte("User does not exist."))
+		}
+	}else {
+		w.Write([]byte("Wrong key please try again"))
+	}
+
+}
 
 func main()  {
-	//var store = sessions.NewCookieStore([]byte("Secret text"))
 	db,err := getDBConnection()
 	if err != nil {
 		panic(err.Error())
@@ -345,6 +404,8 @@ func main()  {
 	http.HandleFunc("/login/google", handleGoogleLogin)
 	http.HandleFunc("/google/back",handleGoogleCallback)
 	http.HandleFunc("/logout",logout)
+	http.HandleFunc("/reset",passReset)
+	http.HandleFunc("/resetResp",checkLink)
 	http.ListenAndServe(":8011",context.ClearHandler(http.DefaultServeMux))
 }
 
