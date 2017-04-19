@@ -331,7 +331,7 @@ func passReset(w http.ResponseWriter,req *http.Request) {
 		http.ServeFile(w, req, "passReset.html")
 		return
 	}
-	auth := smtp.PlainAuth("Kunal Trivedi", "kunalht", "optimusprime@28", "smtp.live.com")
+	auth := smtp.PlainAuth("Kunal Trivedi", "kunalht", "mypassowrd", "smtp.live.com")
 	email:= req.FormValue("email")
 	key := sha256.Sum256([]byte(email+time.Now().Format("12:00:00")))
 
