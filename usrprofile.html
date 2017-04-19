@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile page</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+        td{
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+<h2> Hello {{.Fname}}</h2>
+
+<br>
+<br>
+<table>
+    <tr>
+        <td>E-mail</td>
+        <td>{{.Email}}</td>
+    </tr>
+    <tr>
+        <td>First Name</td>
+        <td>{{.Fname}}</td>
+    </tr>
+    <tr>
+        <td>Last Name</td>
+        <td>{{.Lname}}</td>
+    </tr>
+    <tr>
+        <td>Address</td>
+        <td>{{.Address}}</td>
+    </tr>
+    <tr>
+        <td>Contact Number</td>
+        <td>{{.Number}}</td>
+    </tr>
+</table>
+
+<br>
+<h2>
+<a href="/profile"> Edit your profile HERE</a>
+</h2>
+<h3><a href="/logout">Logout </a> </h3>
+</body>
+</html>
